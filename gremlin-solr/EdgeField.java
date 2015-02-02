@@ -93,4 +93,3 @@ public class EdgeField extends PrimitiveFieldType {
   }
 }
 
-
