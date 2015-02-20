@@ -67,7 +67,7 @@ public class VertexField extends PrimitiveFieldType {
     writer.writeStr(name, f.stringValue(), true);
     Graph g = GraphSignleton.getInstance();
     v = g.addVertex();
-    v.name = name;
+    v.name = f.stringValue();
   }
 
   @Override
