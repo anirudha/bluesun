@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configuration of the Ant build system to generate a Jar file --> 
+<project name="gremlinqparser" default="create_qparser_jar">
+  <target name="create_qparser_jar" description="Create Jar file for qparser">
+		<jar jarfile="bin/gremlinqparser.jar" basedir="bin/" includes="./*.class" />
+  </target>
+</project>
