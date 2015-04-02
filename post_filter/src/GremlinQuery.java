@@ -14,7 +14,6 @@ import com.tinkerpop.gremlin.groovy.jsr223.GremlinGroovyScriptEngineFactory;
 import com.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import com.tinkerpop.gremlin.structure.Graph;
 import com.tinkerpop.gremlin.structure.Vertex;
-import com.tinkerpop.gremlin.structure.Edge;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
@@ -27,6 +26,7 @@ public class GremlinQuery extends ExtendedQueryBase implements PostFilter{
 
         query = localParams.get("query", "");
         ScriptEngine engine = new GremlinGroovyScriptEngineFactory().getScriptEngine();
+
         try{
             graph = (TinkerGraph)engine.eval(query);
         } catch(ScriptException e){
@@ -82,19 +82,12 @@ public class GremlinQuery extends ExtendedQueryBase implements PostFilter{
         Iterator<Vertex> vertexIt = graph.vertexIterator();
         while(vertexIt.hasNext()){
             Vertex v = vertexIt.next();
-
-
+            long vertexID = v.value("docID");
+            if(vertexID == docID)
+                return true;
         }
         return false;
     }
 
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
 
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
 }
