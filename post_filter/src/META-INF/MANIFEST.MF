@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Class-Path: gremlin-groovy-3.0.0.M7.jar tinkergraph-gremlin-3.0.0.M7.j
+ ar
+Main-Class: 
+

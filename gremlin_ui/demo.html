@@ -1,0 +1,58 @@
+<html>
+<head>
+    <title>Graph Demo</title>
+
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="graphvisualization.js"></script>
+</head>
+<body>
+    <div id="visualization_container"></div>
+
+    <button onclick="refresh()">Refresh</button>
+
+    <script>
+        var vertices = [];
+        var edges = [];
+
+        var src = new GraphDataSource({
+            getVertices: function() {
+                return vertices;
+            },
+
+            getEdges: function() {
+                return edges;
+            }});
+
+        var visualization = new GraphVisualization();
+
+        visualization
+            .bindElement(document.getElementById("visualization_container"))
+            .bindDataSource(src)
+            .size(850, 600);
+
+        visualization
+            .on("vertexmousedown", function(vertex) {
+                vertex.fixed = true;
+            });
+
+        function refresh() {
+            vertices = [];
+            edges = [];
+
+            for (var i = 0; i < 10; i++)
+                vertices.push({index: i});
+
+            for (var i = 0; i < 10; i++)
+                for (var j = 0; j < 10; j++) {
+                    if (Math.random() > 0.9) {
+                        edges.push({
+                            source: vertices[i],
+                            target: vertices[j]
+                        });
+                    }
+                }
+
+            visualization.refresh();
+        }
+    </script>
+</body>

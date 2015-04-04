@@ -65,6 +65,13 @@ public class EdgeField extends PrimitiveFieldType {
   @Override
   public void write(TextResponseWriter writer, String name, IndexableField f) throws IOException {
     writer.writeStr(name, f.stringValue(), true);
+    //spli the input string to get the relationship and vertex1 and vertex2
+    String[] inputs = f.stringValue().split(":");
+    Graph g = GraphSignleton.getInstance();
+    Vertex v1 = g.V("name",inputs[1]);
+    Vertex v2 = g.V("name",inputs[2]);
+    String relation = inputs[0];
+    v1.addEdge(relation,v2);
   }
 
   @Override

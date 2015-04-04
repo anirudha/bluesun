@@ -65,6 +65,9 @@ public class VertexField extends PrimitiveFieldType {
   @Override
   public void write(TextResponseWriter writer, String name, IndexableField f) throws IOException {
     writer.writeStr(name, f.stringValue(), true);
+    Graph g = GraphSignleton.getInstance();
+    Vertex v = g.addVertex();
+    v.name = f.stringValue();
   }
 
   @Override
