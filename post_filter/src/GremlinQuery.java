@@ -1,6 +1,8 @@
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 
+import com.tinkerpop.gremlin.tinkergraph.structure.TinkerFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.DocValues;
@@ -11,27 +13,39 @@ import org.apache.solr.search.ExtendedQueryBase;
 import org.apache.solr.search.PostFilter;
 
 import com.tinkerpop.gremlin.groovy.jsr223.GremlinGroovyScriptEngineFactory;
-import com.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import com.tinkerpop.gremlin.structure.Graph;
 import com.tinkerpop.gremlin.structure.Vertex;
 
+import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
 public class GremlinQuery extends ExtendedQueryBase implements PostFilter{
+
     private String query;
-    private TinkerGraph graph;
+    private Graph graph;
+    private HashMap<Long, Vertex> vertexCache;
+    private boolean cacheNotBuilt;
+
     
     public GremlinQuery(SolrParams localParams) {
 
         query = localParams.get("query", "");
         ScriptEngine engine = new GremlinGroovyScriptEngineFactory().getScriptEngine();
 
+        //this part needs to go.
+        Graph g2 = TinkerFactory.createClassic();
+        Bindings bindings = engine.createBindings();
+        bindings.put("g", g2);
+
+
         try{
-            graph = (TinkerGraph)engine.eval(query);
+            graph = (Graph)engine.eval(query);
         } catch(ScriptException e){
 
         }
+        cacheNotBuilt = true;
+        vertexCache = new HashMap<>();
 
     }
     
@@ -79,14 +93,20 @@ public class GremlinQuery extends ExtendedQueryBase implements PostFilter{
     }
 
     private boolean isInGraph(long docID){
-        Iterator<Vertex> vertexIt = graph.vertexIterator();
+        if(cacheNotBuilt)
+            buildVertexCache();
+        return vertexCache.containsKey(docID);
+
+    }
+
+    private void buildVertexCache(){
+        Iterator<Vertex> vertexIt = graph.iterators().vertexIterator();
         while(vertexIt.hasNext()){
             Vertex v = vertexIt.next();
             long vertexID = v.value("docID");
-            if(vertexID == docID)
-                return true;
+            vertexCache.put(vertexID, v);
         }
-        return false;
+        cacheNotBuilt = false;
     }
 
 
