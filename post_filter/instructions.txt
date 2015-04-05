@@ -1,0 +1,17 @@
+Instructions to build jar:
+
+Add the gremlin-core jar and gremlin-groovy ja to IntelliJ as compile time
+dependencies. From the distribution of Solr that you are using, include the
+jars for solr-core, solr-solrj and lucene-core as provided dependencies.
+
+Create an artifact (Project Structure>Artifacts) that will include the
+gremlin-core and gremlin-groovy jars.
+
+Copy the created jar to the solr/example/solr/collection1/lib directory.
+
+Edit the solrconf.xml in the solr/example/solr/collection1/conf directory to
+include the following lines:
+
+     <queryParser
+     name="GremlinQueryFilter"
+     class="GremlinQueryParserPlugin"/>
